@@ -532,8 +532,11 @@ def _gen_efficientnet(
         round_chs_fn=round_chs_fn,
         act_layer=resolve_act_layer(kwargs, 'swish'),
         norm_layer=kwargs.pop('norm_layer', None) or partial(nn.BatchNorm2d, **resolve_bn_args(kwargs)),
-        **kwargs,
+        # **kwargs,
     )
+    if len(set(model_kwargs.keys()).intersection(set(kwargs.keys()))) > 0:
+        print('Warning - overriding typically-fixed EfficientNet features')
+    model_kwargs.update(**kwargs)
     model = _create_effnet(variant, pretrained, **model_kwargs)
     return model
 
